@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<services>
+	<service>
+		<code>001</code>				<!-- 服务代号 -->
+		<type>pay</type>				<!-- 服务类型 -->
+		<response-model>asynchronous</response-model>	<!-- 响应模式 -->
+		<describe>服务1</describe>		<!-- 服务说明 -->
+		<url-list>						<!-- 服务地址列表 -->
+			<url>10.123.65.56:3141</url>
+			<url>10.123.65.44:3141</url>
+		</url-list>
+		<subscriber-list>				<!-- 订阅者 -->
+			<subscriber>10.123.65.33:3141</subscriber>
+			<subscriber>10.123.65.12:3141</subscriber>
+		</subscriber-list>
+
+	</service>
+
+	<service>
+		<code>001</code>
+		<type>pay</type>
+		<response-model>asynchronous</response-model>
+		<describe>服务2</describe>
+		<url-list>
+			<url>10.123.65.56:3141</url>
+			<url>10.123.65.44:3141</url>
+		</url-list>
+		<subscriber-list>
+			<subscriber>10.123.65.33:3141</subscriber>
+			<subscriber>10.123.65.12:3141</subscriber>
+		</subscriber-list>
+
+	</service>
+
+	<service>
+		<code>001</code>
+		<type>pay</type>
+		<response-model>asynchronous</response-model>
+		<describe>服务3</describe>
+		<url-list>
+			<url>10.123.65.56:3141</url>
+			<url>10.123.65.44:3141</url>
+		</url-list>
+		<subscriber-list>
+			<subscriber>10.123.65.33:3141</subscriber>
+			<subscriber>10.123.65.12:3141</subscriber>
+		</subscriber-list>
+
+	</service>
+</services>

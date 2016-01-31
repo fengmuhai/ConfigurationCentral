@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<providerRegInfo>
+	<zookeeperUrl>10.123.65.56:2181</zookeeperUrl>
+	<serviceCode>002</serviceCode>
+	<serviceType>https</serviceType>
+	<responseModel>asynchronous</responseModel>
+	<describe>service1</describe>
+	<serviceUrl>10.123.65.88.6666</serviceUrl>
+</providerRegInfo>
