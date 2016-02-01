@@ -6,9 +6,9 @@ public class HttpClient {
 	private HttpProxy proxy;
 	
 	public static void main(String[] args) {
-		FunctionResult fr = new HttpClient("GET","http://127.0.0.1:8080/","utf-8",10000,10000,"hello world".getBytes(),null).send();
+		FunctionResult fr = new HttpClient("POST","http://127.0.0.1:8080/","utf-8",10000,10000,"hello world".getBytes(),null).send();
 		System.out.println(fr.getRemark());
-		System.out.println(fr.toString());
+		System.out.println(new String((byte[])fr.getDataValue()));
 	}
 	
 	/**
