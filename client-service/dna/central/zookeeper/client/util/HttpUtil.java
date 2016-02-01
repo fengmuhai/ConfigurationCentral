@@ -16,6 +16,10 @@ import dna.central.zookeeper.client.entity.Message;
 * @version 1.0  
 */
 public class HttpUtil {
+	
+	public static void main(String[] args) {
+		
+	}
 
 	@SuppressWarnings("finally")
 	public static String sendPost(String transMes) {
