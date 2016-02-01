@@ -10,6 +10,7 @@ import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooKeeper;
 
 import dna.central.zookeeper.client.entity.ConsumerRegInfo;
+import dna.central.zookeeper.client.util.HttpUtil;
 import dna.central.zookeeper.client.util.XmlUtil;
 
 public class ZkClientConsumer implements Watcher {
@@ -128,6 +129,16 @@ public class ZkClientConsumer implements Watcher {
 		}
 		
 	}
+	
+	/**
+	 * 发送请求消息
+	 * @param msg xml字符串类型的消息格式
+	 * @return
+	 */
+	public static String trans(String msg) {
+		return HttpUtil.sendPost(msg);
+	}
+	
 	
 }
 
