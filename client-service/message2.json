@@ -1,0 +1,26 @@
+{"msg-track" : "1234567",
+ "msg-serial" : "8888888",
+ "service-records" : [
+	{"service-code" : "001",
+ 	 "service-url": "10.123.65.44:8080",
+ 	 "recived-time": "143298647392",
+ 	 "response-time": "143567983349"
+	},
+	{"service-code" : "001",
+ 	 "service-url": "10.123.65.44:8080",
+ 	 "recived-time": "143298647392",
+ 	 "response-time": "143567983349"
+	},
+	{"service-code" : "001",
+ 	 "service-url": "10.123.65.44:8080",
+ 	 "recived-time": "143298647392",
+ 	 "response-time": "143567983349"
+	},
+ 	{"service-code": "003",
+	 "service-url": "http://127.0.0.1:8080",
+ 	 "recived-time": "143298647392",
+	  "response-time": "143567983349"
+	}
+	],
+  "msg-content": "messageContent"
+}

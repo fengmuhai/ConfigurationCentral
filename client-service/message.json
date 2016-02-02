@@ -1,0 +1,26 @@
+{"trackingNo" : "1234567",
+ "serialNo" : "8888888",
+ "serviceRecords" : [
+	{"serviceCode" : "001",
+ 	 "serviceUrl": "10.123.65.44:8080",
+ 	 "recivedTime": "143298647392",
+ 	 "responseTime": "143567983349"
+	},
+	{"serviceCode" : "001",
+ 	 "serviceUrl": "10.123.65.44:8080",
+ 	 "recivedTime": "143298647392",
+ 	 "responseTime": "143567983349"
+	},
+	{"serviceCode" : "001",
+ 	 "serviceUrl": "http://127.0.0.1:8080",
+ 	 "recivedTime": "143298647392",
+ 	 "responseTime": "143567983349"
+	},
+ 	{"serviceCode" : "002",
+ 	 "serviceUrl": "http://127.0.0.1:8080",
+ 	 "recivedTime": "143298647392",
+ 	 "responseTime": "143567983349"
+	}
+	],
+  "msgContent": "messageContent"
+}

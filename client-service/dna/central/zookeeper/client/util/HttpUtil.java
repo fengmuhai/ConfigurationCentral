@@ -18,14 +18,14 @@ import dna.central.zookeeper.client.entity.Message;
 public class HttpUtil {
 	
 	public static void main(String[] args) {
-		
+		System.out.println(sendPost("helloworld!"));
 	}
 
 	@SuppressWarnings("finally")
 	public static String sendPost(String transMes) {
 		String responseMessage = null;
 		try {
-			URL url = new URL("http://127.0.0.1:8080/CBEC/CEACCINF.do");
+			URL url = new URL("http://127.0.0.1:8080/");
 			URLConnection conn = url.openConnection();
 			HttpURLConnection httpUrlConnection = (HttpURLConnection) conn;
 			httpUrlConnection.setRequestMethod("POST");

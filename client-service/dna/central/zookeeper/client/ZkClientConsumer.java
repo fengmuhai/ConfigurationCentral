@@ -3,14 +3,20 @@ package dna.central.zookeeper.client;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooKeeper;
 
+import dna.central.http.client_util.HttpClient;
 import dna.central.zookeeper.client.entity.ConsumerRegInfo;
+import dna.central.zookeeper.client.entity.Message;
+import dna.central.zookeeper.client.entity.ServiceRecord;
 import dna.central.zookeeper.client.util.HttpUtil;
+import dna.central.zookeeper.client.util.JacksonTools;
 import dna.central.zookeeper.client.util.XmlUtil;
 
 public class ZkClientConsumer implements Watcher {
@@ -138,6 +144,26 @@ public class ZkClientConsumer implements Watcher {
 	public static String trans(String msg) {
 		return HttpUtil.sendPost(msg);
 	}
+	
+	/**
+	 * 调用服务请求
+	 * @param msg
+	 * @return
+	 */
+	public static String call(String jsonMsg) {
+		/*Map<?, ?> map = JacksonTools.jsonStr2Map(jsonMsg);
+		List records = (List)map.get("service-records");
+		@SuppressWarnings("unchecked")
+		Map<String, String> maps = (Map<String, String>)records.get(records.size()-1);
+		String url = (String) maps.get("service-url");*/
+		
+		Message msg = JacksonTools.json2Object(jsonMsg, Message.class);
+		List<ServiceRecord> serviceRecords = msg.getServiceRecords();
+		String url = serviceRecords.get(serviceRecords.size()-2).getServiceUrl();
+		
+		HttpClient hc = new HttpClient("POST", url, "UTF-8", 0, 0, jsonMsg.getBytes(), null);
+		return new String((byte[]) hc.send().getDataValue());
+	}  
 	
 	
 }
