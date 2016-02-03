@@ -1,6 +1,8 @@
 package test;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
@@ -24,91 +26,78 @@ import dna.central.zookeeper.client.util.XmlUtil;
 * @date 2016年1月25日 下午3:53:37 
 * @version 1.0  
 */
-public class ClientServiceTest {
+public class ClientServiceTest implements Watcher{
+	
+	private ZooKeeper zk;
+	private String createrId;
+	private boolean contral = false;
 	
 	public static void main(String[] args){
 		
-		try {
-			ZooKeeper zk = new ZooKeeper("10.123.65.56:2184,10.123.65.56:2181,10.123.65.56:2182",30000,new Watcher() {
-
-				@Override
-				public void process(WatchedEvent event) {
-					
-					
-				}
-				
-			});
+		new ClientServiceTest().testCreate_EPHEMERAL_SEQUENTIAL_node("5");
+		while(true) {
 			try {
-				Thread.sleep(2000);
-			} catch (InterruptedException e1) {
-				e1.printStackTrace();
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
-			//zk.create("/test", "hello zokeepers!".getBytes(), Ids.OPEN_ACL_UNSAFE,CreateMode.PERSISTENT);
-			
-			/*while(true){
-				try {
-					Thread.sleep(2000);
-				} catch (InterruptedException e1) {
-					e1.printStackTrace();
-				}
-				
-				if(zk.getState().isConnected()) {
-					System.out.println(new String(zk.getData("/test",false,null)));
-					System.out.println(zk.getSessionId());
-					
-				} else {
-					System.out.println("死了一台zookeeper，重新连接！");
-					System.out.println(new String(zk.getData("/test",false,null)));
-					zk.create("/test/dead_record", String.valueOf(System.currentTimeMillis()).getBytes(), Ids.OPEN_ACL_UNSAFE,CreateMode.PERSISTENT);
-					zk = new ZooKeeper("10.123.65.56:2181,10.123.65.56:2182,10.123.65.56:2184",30000,new Watcher() {
-
-						@Override
-						public void process(WatchedEvent event) {
-							
-							
-						}
-						
-					});
-				}
-				
-				
-				//System.out.println("contected!");
-				
-			}*/
-			
-			
-			//System.out.println(new String(zk.getData(ClientBase.SERVICE_CONGIF_DATA_PATH, false, null)));
-			while(true) {
-				//System.out.println(zk.getSessionId());
-				
-				if(zk.getState().isConnected())
-					System.out.print("Zookeeper Server is alive!  ");
-				else
-					System.out.print("Zookeeper Server is dead!  ");
-				
-				System.out.print(new String(zk.getData("/test",false,null))+"\t");
-				System.out.println(zk.getSessionId());
-				
-				Thread.sleep(8000);
-			}
-			
-			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (KeeperException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
-		
-		
+		//new KeeperWatcher().start();
 	}
 	
 	
+	public void testCreate_EPHEMERAL_SEQUENTIAL_node(String createrId) {
+		this.createrId = createrId;
+		try {
+			zk = new ZooKeeper("127.0.0.1:2181",3000,this);
+			if(zk.exists(ClientBase.WATCHER_SERVICE_PATH,true) == null) {
+				zk.create(ClientBase.WATCHER_SERVICE_PATH, "".getBytes(), Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+			}
+			zk.create(ClientBase.WATCHER_SERVICE_PATH+"/", createrId.getBytes(), Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL_SEQUENTIAL);
+			System.out.println(zk.getChildren(ClientBase.WATCHER_SERVICE_PATH, true));
+					
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println("连接zookeeper成功，创建了临时目录！");
+	}
+
+	@Override
+	public void process(WatchedEvent event) {
+		/*System.out.println("发生了"+event.getType()+"事件，路径为："+event.getPath());
+		List<String> list;
+		try {
+			list = zk.getChildren(ClientBase.WATCHER_SERVICE_PATH, true);
+			String[] nodes = list.toArray(new String[list.size()]); 
+	        Arrays.sort(nodes);
+			if(nodes[0].equals(createrId) && !contral) {
+				contral = true;
+				System.out.println("我是"+createrId+"号，获得了控制权！");
+				zk.getChildren(ClientBase.WATCHER_SERVICE_PATH, true);
+			} else if(contral) {
+				contral = false;
+				System.out.println("我是"+createrId+"号，失去了控制权！");
+				zk.getChildren(ClientBase.WATCHER_SERVICE_PATH, true);
+			}
+		} catch (KeeperException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}*/
+		
+	}
 	
-	
-	
+}
+class KeeperWatcher extends Thread{
+	@Override
+	public void run() {
+		while(true) {
+			try {
+				sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}	
+			
+		}
+	}
 }

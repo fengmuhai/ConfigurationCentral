@@ -6,10 +6,11 @@ package dna.central.zookeeper.client;
 */
 public class ClientBase {
 
-	public static final int CONNECTION_TIMEOUT = 3000;			//连接ZooKeeper超时时间
+	public static final int CONNECTION_TIMEOUT = 3000;			//连接ZooKeeper超时时间。目录节点删除后，触发时间与CONNECTION_TIMEOUT有关
 	public static final String SERVICE_ROOT = "/NameService";	//服务注册的根目录
 	public static final String SERVICE_CONGIF_DATA_PATH = SERVICE_ROOT+"/config_data";				//配置文件节点
 	public static final String CONFIGURATION_SERVICE_PATH = SERVICE_ROOT+"/ConfigurationService";	//配置服务目录	
+	public static final String WATCHER_SERVICE_PATH = "/WatcherService";		//监控/配置服务目录
 
 	public static final String NODE_DATA_CHANGED = "NodeDataChanged";	//watcher触发事件名
 	public static final String NODE_CREATED = "NodeCreated";

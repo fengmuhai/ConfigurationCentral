@@ -73,16 +73,11 @@ public class ZkClientConsumer implements Watcher {
 			e.printStackTrace();
 		}
 		
-		//开启对数据变化监听
-		try {
-			zookeeper.getData(ClientBase.SERVICE_CONGIF_DATA_PATH, true, null);
-			System.out.println("Begin to Watcher data...");
-		} catch (KeeperException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		//zookeeper.getData(ClientBase.SERVICE_CONGIF_DATA_PATH, true, null);
+		//获取最新节点数据到配置文件,并开启对数据节点监听(获取时会重新设置监听)
+		updateConfigToServer(consumerRegInfo.getConfigPath());	
 		
+		System.out.println("Begin to Watcher data...");
 		
 		new ConsumerWatcher().start();	//执行线程让程序继续运行，实现watcher监视
 		
@@ -159,7 +154,8 @@ public class ZkClientConsumer implements Watcher {
 		
 		Message msg = JacksonTools.json2Object(jsonMsg, Message.class);
 		List<ServiceRecord> serviceRecords = msg.getServiceRecords();
-		String url = serviceRecords.get(serviceRecords.size()-2).getServiceUrl();
+		//List是有序的取得最后一个记录即可获得最新请求的URL
+		String url = serviceRecords.get(serviceRecords.size()-1).getServiceUrl();
 		
 		HttpClient hc = new HttpClient("POST", url, "UTF-8", 0, 0, jsonMsg.getBytes(), null);
 		return new String((byte[]) hc.send().getDataValue());

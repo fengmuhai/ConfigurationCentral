@@ -5,5 +5,5 @@
 	<serviceType>https</serviceType>
 	<responseModel>asynchronous</responseModel>
 	<describe>service1</describe>
-	<serviceUrl>10.123.65.88.6666</serviceUrl>
+	<serviceUrl>10.123.65.88.8888</serviceUrl>
 </providerRegInfo>
