@@ -17,6 +17,7 @@ import dna.central.zookeeper.client.entity.Message;
 import dna.central.zookeeper.client.entity.ServiceRecord;
 import dna.central.zookeeper.client.util.HttpUtil;
 import dna.central.zookeeper.client.util.JacksonTools;
+import dna.central.zookeeper.client.util.MessageUtils;
 import dna.central.zookeeper.client.util.XmlUtil;
 
 public class ZkClientConsumer implements Watcher {
@@ -145,12 +146,12 @@ public class ZkClientConsumer implements Watcher {
 	 * @param msg
 	 * @return
 	 */
-	public static String call(String jsonMsg) {
-		/*Map<?, ?> map = JacksonTools.jsonStr2Map(jsonMsg);
-		List records = (List)map.get("service-records");
-		@SuppressWarnings("unchecked")
-		Map<String, String> maps = (Map<String, String>)records.get(records.size()-1);
-		String url = (String) maps.get("service-url");*/
+	public static Message call(String jsonMsg) {
+		
+		if(jsonMsg==null || jsonMsg.equals("")) {
+			System.err.println("jsonMsg is null!");
+			return null;
+		}
 		
 		Message msg = JacksonTools.json2Object(jsonMsg, Message.class);
 		List<ServiceRecord> serviceRecords = msg.getServiceRecords();
@@ -158,7 +159,14 @@ public class ZkClientConsumer implements Watcher {
 		String url = serviceRecords.get(serviceRecords.size()-1).getServiceUrl();
 		
 		HttpClient hc = new HttpClient("POST", url, "UTF-8", 0, 0, jsonMsg.getBytes(), null);
-		return new String((byte[]) hc.send().getDataValue());
+		String resp_str = new String((byte[]) hc.send().getDataValue());
+		//return resp_str;
+		
+		//设置响应时间
+		Message message = MessageUtils.toMessage(resp_str);
+		MessageUtils.setResponseTime(message, String.valueOf(System.currentTimeMillis()));
+		return message;
+		
 	}  
 	
 	
