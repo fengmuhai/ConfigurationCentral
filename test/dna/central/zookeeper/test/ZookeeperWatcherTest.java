@@ -27,6 +27,7 @@ public class ZookeeperWatcherTest {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
 	}
 	
 	public static void setDataTest(ZooKeeper zk, String new_data) {
