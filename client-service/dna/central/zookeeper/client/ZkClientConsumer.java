@@ -11,7 +11,7 @@ import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooKeeper;
 
-import dna.central.http.client_util.HttpClient;
+import dna.central.httpClient.HttpClient;
 import dna.central.zookeeper.client.entity.ConsumerRegInfo;
 import dna.central.zookeeper.client.entity.Message;
 import dna.central.zookeeper.client.entity.ServiceRecord;
