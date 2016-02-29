@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <consumerRegInfo>
-	<zookeeperUrl>10.123.65.56:2181</zookeeperUrl>
+	<zookeeperUrl>10.123.65.40:2184,10.123.65.40:2181,10.123.65.40:2182</zookeeperUrl>
 	<configPath>D:/configPath.xml</configPath>
 </consumerRegInfo>

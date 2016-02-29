@@ -13,7 +13,7 @@ public class ZookeeperWatcherTest {
 	public static void main(String[] args) {
 		ZooKeeper zk = null;
 		try {
-			zk = new ZooKeeper("10.123.65.56:2184,10.123.65.56:2181,10.123.65.56:2182",30000,new Watcher() {
+			zk = new ZooKeeper("10.123.65.40:2184,10.123.65.40:2181,10.123.65.40:2182",30000,new Watcher() {
 
 				@Override
 				public void process(WatchedEvent event) {

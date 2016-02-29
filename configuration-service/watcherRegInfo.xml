@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <watcherRegInfo>
-	<zookeeperUrl>10.123.65.56:2181,10.123.65.56:2182,10.123.65.56:2184</zookeeperUrl>
+	<zookeeperUrl>10.123.65.40:2184,10.123.65.40:2181,10.123.65.40:2182</zookeeperUrl>
 	<watcherId>D:/configPath.xml</watcherId>
 </watcherRegInfo>
