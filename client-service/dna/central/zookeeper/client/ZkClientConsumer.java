@@ -3,6 +3,8 @@ package dna.central.zookeeper.client;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,7 +16,6 @@ import org.apache.zookeeper.ZooKeeper;
 import dna.central.httpClient.HttpClient;
 import dna.central.zookeeper.client.entity.ConsumerRegInfo;
 import dna.central.zookeeper.client.entity.Message;
-import dna.central.zookeeper.client.entity.ServiceRecord;
 import dna.central.zookeeper.client.util.HttpUtil;
 import dna.central.zookeeper.client.util.JacksonTools;
 import dna.central.zookeeper.client.util.MessageUtils;
@@ -26,8 +27,43 @@ public class ZkClientConsumer implements Watcher {
 	private static ZooKeeper zookeeper;
 	
 	public static void main(String[] args) {
-		String conXmlInfo = XmlUtil.xmlFileToString("client-service/consumerRegInfo.xml");
-		ZkClientConsumer.init(conXmlInfo);
+		/*String conXmlInfo = XmlUtil.xmlFileToString("client-service/consumerRegInfo.xml");
+		ZkClientConsumer.init(conXmlInfo);*/
+		
+		/*try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}*/
+		
+		Message msg = new Message();
+		msg.setTrackingNo("1000");
+		msg.setSerialNo("11111");
+		msg.setMsgContent("Hello world!");
+		List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+		for(int i=0;i<10;i++) {
+
+			Map<String, String> serviceRecord = new HashMap<String, String>();
+			serviceRecord.put("serviceUrl","http://10.123.65.55:8080");
+			serviceRecord.put("ServiceCode","000"+i);//setServiceCode("001");
+			serviceRecord.put("recivedTime","");//setRecivedTime("");
+			serviceRecord.put("responseTime","");//setResponseTime("");
+			
+			
+			list.add(serviceRecord);
+			
+			msg.setServiceRecords(list);
+			
+			System.out.println(MessageUtils.toJsonStr(msg).length());
+			System.out.println(MessageUtils.toJsonStr(msg));
+			Message RespMsg = call(MessageUtils.toJsonStr(msg));
+
+			msg = RespMsg;
+			list = msg.getServiceRecords();
+			System.out.println(MessageUtils.toJsonStr(RespMsg));
+			
+		}
+		
 		
 	}
 	
@@ -154,17 +190,17 @@ public class ZkClientConsumer implements Watcher {
 		}
 		
 		Message msg = JacksonTools.json2Object(jsonMsg, Message.class);
-		List<ServiceRecord> serviceRecords = msg.getServiceRecords();
+		List<Map<String, String>> serviceRecords = msg.getServiceRecords();
 		//List是有序的取得最后一个记录即可获得最新请求的URL
-		String url = serviceRecords.get(serviceRecords.size()-1).getServiceUrl();
+		String url = serviceRecords.get(serviceRecords.size()-1).get("serviceUrl");
 		
 		HttpClient hc = new HttpClient("POST", url, "UTF-8", 0, 0, jsonMsg.getBytes(), null);
-		String resp_str = new String((byte[]) hc.send().getDataValue());
+		String resp_str = new String((byte[]) (hc.send().getDataValue()));
 		//return resp_str;
 		
-		//设置响应时间
+		//设置响应时间,服务方设置
 		Message message = MessageUtils.toMessage(resp_str);
-		MessageUtils.setResponseTime(message, String.valueOf(System.currentTimeMillis()));
+		//MessageUtils.setResponseTime(message, String.valueOf(System.currentTimeMillis()));
 		return message;
 		
 	}  

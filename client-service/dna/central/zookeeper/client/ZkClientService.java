@@ -16,7 +16,6 @@ import org.apache.zookeeper.ZooDefs.Ids;
 
 import com.thoughtworks.xstream.XStream;
 
-import dna.central.zookeeper.client.entity.Message;
 import dna.central.zookeeper.client.entity.RegisterInfo;
 import dna.central.zookeeper.client.util.HttpUtil;
 import dna.central.zookeeper.client.util.XmlUtil;

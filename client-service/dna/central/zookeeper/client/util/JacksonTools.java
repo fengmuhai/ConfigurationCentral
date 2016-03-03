@@ -3,6 +3,8 @@ package dna.central.zookeeper.client.util;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +13,8 @@ import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+
+import dna.central.zookeeper.client.entity.Message;
 
 
 public class JacksonTools {
@@ -25,6 +29,30 @@ public class JacksonTools {
 		list.add(str);
 		System.out.println(toString(map));*/
 		//System.out.println(map2JsonStr(map));
+		
+		
+		Message msg = new Message();
+		msg.setTrackingNo("1000");
+		msg.setSerialNo("11111");
+		
+		Map<String, String> serviceRecord = new HashMap<String, String>();
+		serviceRecord.put("serviceUrl","http://10.123.65.55:8080");
+		serviceRecord.put("ServiceCode","001");//setServiceCode("001");
+		serviceRecord.put("recivedTime","");//setRecivedTime("");
+		serviceRecord.put("responseTime","");//setResponseTime("");
+		List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+		list.add(serviceRecord);
+		
+		msg.setServiceRecords(list);
+		msg.setMsgContent("Hello world!");
+		
+		System.out.println(MessageUtils.toJsonStr(msg));
+		
+		
+		String jsonStr = MessageUtils.toJsonStr(msg);
+		Message msg2 = json2Object(jsonStr, Message.class);
+		
+		System.out.println(MessageUtils.toJsonStr(msg2));
 	}
 	
 	/**

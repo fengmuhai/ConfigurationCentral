@@ -1,4 +1,7 @@
 package dna.central.httpServer;
+
+import dna.central.zookeeper.client.entity.Message;
+
 /** 
  * @author fengmuhai
  * @date 2016-2-26 上午10:15:51 
@@ -6,7 +9,7 @@ package dna.central.httpServer;
  */
 public interface BusinessHandlerInterface {		//业务逻辑处理接口
 
-	String handle(String msg);
+	Message handle(Message msg);	//msg为接收到的请求消息
 	
 	
 }

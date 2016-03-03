@@ -7,19 +7,31 @@ import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.ZooDefs.Ids;
 
+import dna.central.httpServer.BusinessHandlerInterface;
+import dna.central.httpServer.HttpServer;
+import dna.central.zookeeper.client.entity.Message;
 import dna.central.zookeeper.client.entity.ProviderRegInfo;
+import dna.central.zookeeper.client.util.MessageUtils;
 import dna.central.zookeeper.client.util.XmlUtil;
 
-public class ZkClientProvider {
+public class ZkClientProvider implements BusinessHandlerInterface{
 
 	private static ProviderRegInfo providerRegInfo;
 	private static ZooKeeper zookeeper;
 	
 	public static void main(String[] args){
 
-		String regXmlInfo = XmlUtil.xmlFileToString("client-service/providerRegInfo.xml");
+		/*String regXmlInfo = XmlUtil.xmlFileToString("client-service/providerRegInfo.xml");
 		System.out.println(regXmlInfo);
-		ZkClientProvider.init(regXmlInfo);
+		ZkClientProvider.init(regXmlInfo);*/
+		
+		try {
+			HttpServer.init(new ZkClientProvider());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		
 
 	}
 	
@@ -180,6 +192,15 @@ public class ZkClientProvider {
 		} finally {
 			return ret;
 		}
+	}
+
+
+	@Override
+	public Message handle(Message msg) {
+		MessageUtils.setRecivedTime(msg, System.currentTimeMillis()+"");
+		
+		MessageUtils.setResponseTime(msg, System.currentTimeMillis()+"");
+		return msg;
 	}
 	
 	

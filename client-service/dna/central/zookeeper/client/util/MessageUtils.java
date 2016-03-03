@@ -1,9 +1,9 @@
 package dna.central.zookeeper.client.util;
 
 import java.util.List;
+import java.util.Map;
 
 import dna.central.zookeeper.client.entity.Message;
-import dna.central.zookeeper.client.entity.ServiceRecord;
 
 public class MessageUtils {
 
@@ -20,6 +20,11 @@ public class MessageUtils {
 		
 	}
 	
+	//消息对象转换为字符串
+	public static String toJsonStr(Message msg) {
+		return JacksonTools.object2Json(msg);
+	}
+	
 	/**
 	 * 为服务提供者提供设置接收时间的方法
 	 * @param message
@@ -30,13 +35,13 @@ public class MessageUtils {
 			System.err.println("Message is null!");
 			return;
 		}
-		List<ServiceRecord> list = message.getServiceRecords();
+		List<Map<String, String>> list = message.getServiceRecords();
 		if(list.size()<=0 || list.isEmpty()){
 			System.err.println("Message serviceRecords is null!");
 			return;
 		}
-		ServiceRecord sr = list.get(list.size()-1);
-		sr.setRecivedTime(recivedTime);
+		Map<String, String> record = list.get(list.size()-1);
+		record.put("recivedTime",recivedTime);
 	}
 	
 	/**
@@ -49,13 +54,13 @@ public class MessageUtils {
 			System.err.println("Message is null!");
 			return;
 		}
-		List<ServiceRecord> list = message.getServiceRecords();
+		List<Map<String, String>> list = message.getServiceRecords();
 		if(list.size()<=0 || list.isEmpty()){
 			System.err.println("Message serviceRecords is null!");
 			return;
 		}
-		ServiceRecord sr = list.get(list.size()-1);
-		sr.setRecivedTime(responseTime);
+		Map<String, String> record = list.get(list.size()-1);
+		record.put("responseTime",responseTime);
 	}
 	
 }

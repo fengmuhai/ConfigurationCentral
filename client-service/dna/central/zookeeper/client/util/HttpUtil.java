@@ -8,7 +8,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 
-import dna.central.zookeeper.client.entity.Message;
 
 /** 
 * @author fengmuhai

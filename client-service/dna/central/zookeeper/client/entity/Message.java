@@ -1,6 +1,7 @@
 package dna.central.zookeeper.client.entity;
 
 import java.util.List;
+import java.util.Map;
 
 /** 
 * @author fengmuhai
@@ -15,7 +16,7 @@ public class Message {
 	 */
 	private String trackingNo;
 	private String serialNo;
-	private List<ServiceRecord> serviceRecords;
+	private List<Map<String, String>> serviceRecords;
 	private String msgContent;
 	
 	public Message() {
@@ -38,11 +39,11 @@ public class Message {
 		this.serialNo = serialNo;
 	}
 
-	public List<ServiceRecord> getServiceRecords() {
+	public List<Map<String, String>> getServiceRecords() {
 		return serviceRecords;
 	}
 
-	public void setServiceRecords(List<ServiceRecord> serviceRecords) {
+	public void setServiceRecords(List<Map<String, String>> serviceRecords) {
 		this.serviceRecords = serviceRecords;
 	}
 
