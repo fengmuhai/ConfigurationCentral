@@ -12,7 +12,7 @@ public class Message {
 
 	/**
 	 * 消息格式：
-	 * 消息跟踪号，消息流水号，{{服务代号，服务地址，消息接收时间，消息响应时间},...}，消息内容
+	 * 消息跟踪号,消息流水号,{{服务代号,服务地址,消息接收时间,消息响应时间,响应码},...},消息内容
 	 */
 	private String trackingNo;
 	private String serialNo;

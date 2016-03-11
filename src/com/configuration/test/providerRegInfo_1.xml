@@ -2,9 +2,9 @@
 <providerRegInfo>
 	<!-- <zookeeperUrl>10.123.65.40:2184,10.123.65.40:2181,10.123.65.40:2182</zookeeperUrl> -->
 	<zookeeperUrl>10.123.65.40:2181</zookeeperUrl>
-	<serviceCode>002</serviceCode>
+	<serviceCode>0011</serviceCode>
 	<serviceType>https</serviceType>
 	<responseModel>asynchronous</responseModel>
 	<describe>service1</describe>
-	<serviceUrl>10.123.65.44.2222</serviceUrl>
+	<serviceUrl>10.123.65.40:8080</serviceUrl>
 </providerRegInfo>

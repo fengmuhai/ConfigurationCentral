@@ -1,5 +1,7 @@
 package test;
 
+import java.util.List;
+
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
@@ -16,7 +18,22 @@ import dna.central.zookeeper.client.ClientBase;
 public class zookeeperClientTest implements Watcher{
 
 	public static void main(String[] args){
-		new zookeeperClientTest().register();
+		new zookeeperClientTest().checkNodes();
+	}
+	
+	public void checkNodes() {
+		try {
+			// 创建一个与服务器的连接
+			 ZooKeeper zk = new ZooKeeper("127.0.0.1:2181", 30000, this); 
+			List<String> list =zk.getChildren(ClientBase.SERVICE_ROOT, false);
+			for(int i=0;i<list.size();i++){
+				System.out.println(list.get(i));
+			}
+			 // 关闭连接
+			 zk.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void register(){

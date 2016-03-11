@@ -24,6 +24,6 @@ public class BusinessHandler implements BusinessHandlerInterface {
 	@Override
 	public Message handle(Message msg) {
 		// TODO Auto-generated method stub
-		return null;
+		return msg;
 	}
 }

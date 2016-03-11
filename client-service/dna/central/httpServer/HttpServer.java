@@ -23,13 +23,13 @@ public final class HttpServer {
     
     public static void main(String[] args) {
     	try {
-			init(null);
+			init(8080 ,new BusinessHandler());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
     }
     
-    public static void init(Object businessHandler) throws Exception {
+    public static void init(int port, Object businessHandler) throws Exception {
     	// Configure SSL.
         final SslContext sslCtx;
         if (SSL) {
@@ -50,10 +50,10 @@ public final class HttpServer {
              .handler(new LoggingHandler(LogLevel.INFO))
              .childHandler(new HttpServerInitializer(sslCtx, businessHandler));
 
-            Channel ch = b.bind(PORT).sync().channel();
+            Channel ch = b.bind(port).sync().channel();
 
             System.err.println("Open your web browser and navigate to " +
-                    (SSL? "https" : "http") + "://127.0.0.1:" + PORT + '/');
+                    (SSL? "https" : "http") + "://127.0.0.1:" + port + '/');
 
             ch.closeFuture().sync();
         } finally {

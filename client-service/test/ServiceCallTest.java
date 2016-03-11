@@ -11,7 +11,7 @@ public class ServiceCallTest {
 		for(int i=0;i<10;i++){
 			new Thread() {
 				public void run() {
-					System.out.println(ZkClientConsumer.call(jstr));
+					//System.out.println(ZkClientConsumer.call(jstr));
 					try {
 						this.sleep(1000);
 					} catch (InterruptedException e) {

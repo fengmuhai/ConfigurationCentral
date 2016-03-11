@@ -12,4 +12,5 @@ public interface BusinessHandlerInterface {		//业务逻辑处理接口
 	Message handle(Message msg);	//msg为接收到的请求消息
 	
 	
+	
 }
