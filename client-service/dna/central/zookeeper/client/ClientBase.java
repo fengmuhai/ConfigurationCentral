@@ -1,4 +1,8 @@
 package dna.central.zookeeper.client;
+
+import java.util.HashMap;
+import java.util.Hashtable;
+
 /** 
 * @author fengmuhai
 * @date 2016年1月19日 下午5:42:51 
@@ -27,5 +31,28 @@ public class ClientBase {
 	public static final String SERVICE_DESCRIBE_NODE = "/Describe";
 	public static final String URL_LIST_NODE = "/UrlList";
 	public static final String SUBSCRIBER_LIST_NODE = "/SubscriberList";
+	
+	/**
+	 * 服务调用方式
+	 */
+	public static final int RANDOM = 0;				//随机
+	public static final int ROUND_ROBIN = 1;		//轮询
+	public static final int WEIGHT_BASED = 2;		//权重
+	
+	/**
+	 * 服务轮询记录
+	 */
+	public static Hashtable<String, Integer> ROUND_ROBIN_RECORD = new Hashtable<String, Integer>();
+
+	public static Hashtable<String, Integer> getROUND_ROBIN_RECORD() {
+		return ROUND_ROBIN_RECORD;
+	}
+
+	public static synchronized int getRoundRobinChance(String key) {
+		int value = ROUND_ROBIN_RECORD.get(key);
+		ROUND_ROBIN_RECORD.put(key, value+1);
+		return value;
+	}
+
 	
 }

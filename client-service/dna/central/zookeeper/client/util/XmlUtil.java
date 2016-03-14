@@ -2,6 +2,7 @@ package dna.central.zookeeper.client.util;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 
 import com.thoughtworks.xstream.XStream;
@@ -25,15 +26,6 @@ public class XmlUtil {
 	 * @param cls
 	 * @return
 	 */
-	/*public static <T> T toBean(String xmlStr, Class<T> cls) {
-		XStream xstream = new XStream(new DomDriver());
-		xstream.processAnnotations(cls);
-		@SuppressWarnings("unchecked")
-		T t = (T) xstream.toXML(xmlStr);
-		return t;
-		
-	}*/
-	
 	public static <T> T toBean(String xmlStr, Class<T> cls) {
         XStream xstream = new XStream(new DomDriver());
         xstream.processAnnotations(cls);
@@ -41,6 +33,23 @@ public class XmlUtil {
         T t = (T) xstream.fromXML(xmlStr);
         return t;
     }
+	
+
+	/**
+	 * xml文件转对象
+	 * @param xmlFile	xml文件
+	 * @param cls		要转成的类
+	 * @return			该类的实体对象
+	 */
+	public static <T> T toBean(File xmlFile, Class<T> cls) {
+		XStream xstream = new XStream(new DomDriver());
+		xstream.processAnnotations(cls);
+		@SuppressWarnings("unchecked")
+		T t = (T) xstream.fromXML(xmlFile);
+		return t;
+	}
+	
+	
 	
 	public static String toXml(Object obj) {
 		XStream xstream = new XStream(new DomDriver("utf8"));
@@ -84,41 +93,32 @@ public class XmlUtil {
 		return xstream.toXML(obj);
 	}
 	
-	
+	/**
+	 * xml文件转xml字符串
+	 * @param path
+	 * @return
+	 */
 	public static String xmlFileToString(String path) {
-		FileInputStream in = null;
+		FileReader reader = null;
 		StringBuilder sb = new StringBuilder();
-		byte[] buf = new byte[1];
+		char[] buf = new char[1024];
 		try {
-			in = new FileInputStream(new File(path));
-			while(in.read(buf)!=-1){
-				sb.append(readBuffer(buf));
+			reader = new FileReader(path);
+			int temp = 0;
+			while((temp=reader.read(buf))!=-1){
+				sb.append(String.valueOf(buf,0,temp));
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
 			try {
-				in.close();
+				reader.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
 		return sb.toString();
 	}
-	
-	public static String readBuffer(byte[] buffer){
-		if(buffer==null)
-			return null;
-		if(buffer.length==0){
-			return "";
-		}
-		StringBuilder sb = new StringBuilder();
-		for(int i=0;i<buffer.length;i++){
-			sb.append((char)buffer[i]);		//转换成字符拼接成字符串
-		}
-		return sb.toString();
-	}
-	
 
 	
 }

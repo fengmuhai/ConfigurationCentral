@@ -23,7 +23,8 @@ import dna.central.zookeeper.client.util.JacksonTools;
 import dna.central.zookeeper.client.util.MessageUtils;
 import dna.central.zookeeper.client.util.XmlUtil;
 
-public class ZkClientConsumer implements Watcher {
+public class ZkClientConsumer {
+	
 	
 	private static ConsumerRegInfo consumerRegInfo;
 	private static ZooKeeper zookeeper;
@@ -31,46 +32,7 @@ public class ZkClientConsumer implements Watcher {
 	private static List<String> name_service_nodes;		//zookeeper服务目录的缓存数据
 
 	private static Logger logger = Logger.getLogger("client-service.dna.central.zookeeper.client.ZkClientConsumer");
-	private static ServiceList serviceList;
-	
-	public static void main(String[] args) {
-		
-		
-		String conXmlInfo = XmlUtil.xmlFileToString("client-service/consumerRegInfo.xml");
-		ZkClientConsumer.init(conXmlInfo);
-		
-		/*
-		Message msg = new Message();
-		msg.setTrackingNo("1000");
-		msg.setSerialNo("11111");
-		msg.setMsgContent("你好！！!");
-		List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-		for(int i=0;i<10;i++) {
-
-			Map<String, String> serviceRecord = new HashMap<String, String>();
-			serviceRecord.put("serviceUrl","http://10.123.65.40:8080");
-			serviceRecord.put("ServiceCode","000"+i);//setServiceCode("001");
-			serviceRecord.put("recivedTime","");//setRecivedTime("");
-			serviceRecord.put("responseTime","");//setResponseTime("");
-			//serviceRecord.put("");
-			
-			
-			list.add(serviceRecord);
-			
-			msg.setServiceRecords(list);
-			
-			System.out.println(MessageUtils.toJsonStr(msg).length());
-			System.out.println(MessageUtils.toJsonStr(msg));
-			Message RespMsg = call(MessageUtils.toJsonStr(msg));
-
-			msg = RespMsg;
-			list = msg.getServiceRecords();
-			System.out.println(MessageUtils.toJsonStr(RespMsg));
-			
-		}*/
-		
-		
-	}
+	private static ServiceList serviceList;				//服务列表缓存
 	
 
 	public ZkClientConsumer() {
@@ -140,6 +102,8 @@ public class ZkClientConsumer implements Watcher {
 			//配置服务程序开启后，打开对NameService的监听，若有事件发生则会触发process事件
 			name_service_nodes = zookeeper.getChildren(ClientBase.SERVICE_ROOT, true);
 			for(int i=0;i<name_service_nodes.size();i++) {
+				//开机时初始化服务轮询记录
+				ClientBase.ROUND_ROBIN_RECORD.put(name_service_nodes.get(i), 0);
 				List<String> service_nodes = zookeeper.getChildren(ClientBase.SERVICE_ROOT+"/"+name_service_nodes.get(i), true);
 				for(int j=0;j<service_nodes.size();j++) {
 					zookeeper.getChildren(ClientBase.SERVICE_ROOT+"/"
@@ -204,6 +168,8 @@ public class ZkClientConsumer implements Watcher {
 				List<String> service_nodes = zookeeper.getChildren(ClientBase.SERVICE_ROOT+"/"+new_service, true);
 				//对新服务的子节点全部进行监控
 				watcherServiceNodes(ClientBase.SERVICE_ROOT+"/"+new_service, service_nodes);
+				//初始化新服务的轮询记录
+				ClientBase.getROUND_ROBIN_RECORD().put(new_service, 0);
 			} else {
 				ZnodePath zp = new ZnodePath(event_path);
 				if(zp.getServiceList().equals("UrlList")) {		//地址列表变化
@@ -279,6 +245,58 @@ public class ZkClientConsumer implements Watcher {
 		
 	}
 	
+	/**
+	 * 调用服务请求
+	 * @param msg
+	 * @return
+	 */
+	public static Message call(Message msg) {
+		
+		String jsonMsg = JacksonTools.object2Json(msg);
+		if(jsonMsg==null || jsonMsg.equals("")) {
+			System.err.println("jsonMsg is null!");
+			return null;
+		}
+		String url = getUrlByRemoteMode(msg,ClientBase.ROUND_ROBIN);	//随机调用
+		HttpClient hc = new HttpClient("POST", url, "UTF-8", 0, 0, jsonMsg.getBytes(), null);
+		String resp_str = null;
+		try {
+			resp_str = new String((byte[]) (hc.send().getDataValue()));
+		} catch (Exception e) {
+			if(e instanceof java.lang.NullPointerException) {
+				//服务器处理失败
+				MessageUtils.setResponseCode(msg, "001");
+				resp_str = MessageUtils.toJsonStr(msg);
+			}
+		}
+		hc = null;
+		return MessageUtils.toMessage(resp_str);
+		
+	}
+	
+	public static String getUrlByRemoteMode(Message message, int mode) {
+		
+		//List是有序的取得最后一个记录即可获得最新请求的服务代号
+		String code = MessageUtils.getLatelyRecord(message).get("serviceCode");
+		Service service = serviceList.getServiceByCode(code);
+		List<String> urlList = service.getUrlList();
+		if(urlList.size()<=0){
+			logger.warning("该服务代号对应的服务无地址列表，请确认服务代号无误！");
+			return null;
+		}
+		String url = "";
+		switch(mode){
+			case ClientBase.RANDOM: 
+				url = urlList.get((int)(Math.random()*urlList.size()));
+			case ClientBase.ROUND_ROBIN:
+				url = urlList.get(ClientBase.getRoundRobinChance(code)%2);
+			case ClientBase.WEIGHT_BASED:
+				url = urlList.get((int)(Math.random()*urlList.size()));
+		}
+		return "http://"+url;
+	}
+
+	
 	
 	/* 程序使用了静态方法初始化，process方法写在了new Watcher(){}中
 	 * @Override
@@ -297,12 +315,9 @@ public class ZkClientConsumer implements Watcher {
 	 * 更新配置文件到本地服务器
 	 * @param configPath
 	 */
-	protected static void updateConfigToServer(final String configPath) {
+	/*protected static void updateConfigToServer(final String configPath) {
 		//读取zookeeper节点更新数据
 		byte[] new_data = null;
-		
-		
-		
 		try {
 			//获取数据并重新设置监听
 			new_data = zookeeper.getData(ClientBase.SERVICE_CONGIF_DATA_PATH, true, null);
@@ -330,54 +345,15 @@ public class ZkClientConsumer implements Watcher {
 			}
 		}
 		
-	}
+	}*/
 	
-	/**
-	 * 调用服务请求
-	 * @param msg
-	 * @return
-	 */
-	public static Message call(Message msg) {
+	
 
-		String jsonMsg = JacksonTools.object2Json(msg);
-		if(jsonMsg==null || jsonMsg.equals("")) {
-			System.err.println("jsonMsg is null!");
-			return null;
-		}
-		
-		//List是有序的取得最后一个记录即可获得最新请求的URL
-		String code = MessageUtils.getLatelyRecord(msg).get("serviceCode");
-		Service service = serviceList.getServiceByCode(code);
-		List<String> urlList = service.getUrlList();
-		if(urlList.size()<=0){
-			logger.warning("该服务代号对应的服务无地址列表，请确认服务代号无误！");
-			return null;
-		}
-		//随机调用
-		String url = "http://"+urlList.get((int)(Math.random()*urlList.size()));
-		HttpClient hc = new HttpClient("POST", url, "UTF-8", 0, 0, jsonMsg.getBytes(), null);
-		String resp_str = null;
-		try {
-			resp_str = new String((byte[]) (hc.send().getDataValue()));
-		} catch (Exception e) {
-			if(e instanceof java.lang.NullPointerException) {
-				//服务器处理失败
-				MessageUtils.setResponseCode(msg, "001");
-				resp_str = MessageUtils.toJsonStr(msg);
-			}
-		}
-		
-		
-		return MessageUtils.toMessage(resp_str);
-		
-	}
-
-
-	@Override
+	/*@Override
 	public void process(WatchedEvent event) {
 		// TODO Auto-generated method stub
 		
-	}
+	}*/
 
 
 	public static ServiceList getServiceList() {

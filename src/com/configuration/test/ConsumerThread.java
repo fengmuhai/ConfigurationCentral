@@ -35,7 +35,7 @@ public class ConsumerThread extends Thread {
 			e.printStackTrace();
 		}
 		
-		for(int i=0;i<180;i++) {
+		for(int i=0;i<30;i++) {
 			System.err.println("<<<<<<=========开启第"+i+"个线程==============>>>>>>>");
 			new ConsumerThread(i).start();
 		}
@@ -43,7 +43,7 @@ public class ConsumerThread extends Thread {
 	}
 	
 	public void run() {
-		for(int i=0;i<1;i++) {
+		for(int i=0;i<2;i++) {
 			//调用服务
 			Message msg = new Message();
 			msg.setTrackingNo("1000");

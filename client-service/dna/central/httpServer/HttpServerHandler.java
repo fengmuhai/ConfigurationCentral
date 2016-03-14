@@ -40,7 +40,7 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
     private static Object businessHandler = null;
     private static final int MAX_HANDLER = 10;
     private static int current_request = 0;
-    private static ExecutorService executor = Executors.newFixedThreadPool(20);
+    private static ExecutorService executor = Executors.newFixedThreadPool(5);
 
     public HttpServerHandler(Object businessHandler) {
     	if(HttpServerHandler.businessHandler==null) {

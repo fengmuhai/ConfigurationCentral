@@ -34,7 +34,7 @@ class BusinessHandler2 implements BusinessHandlerInterface {
 	public Message handle(Message msg) {
 		MessageUtils.setRecivedTime(msg, String.valueOf(System.currentTimeMillis()));
 		System.out.println("==============调用服务-02==============");
-		MessageUtils.setResponseCode(msg, "==============调用服务-02==============");
+		MessageUtils.setResponseCode(msg, "002");
 		MessageUtils.setResponseTime(msg, String.valueOf(System.currentTimeMillis()));
 		return msg;
 	}
