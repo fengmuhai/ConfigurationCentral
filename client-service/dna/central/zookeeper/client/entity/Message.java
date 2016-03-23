@@ -1,5 +1,6 @@
 package dna.central.zookeeper.client.entity;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,7 +21,8 @@ public class Message {
 	private String msgContent;
 	
 	public Message() {
-		
+		this.trackingNo = String.valueOf(System.currentTimeMillis());
+		this.serialNo = trackingNo;
 	}
 
 	public String getTrackingNo() {

@@ -2,6 +2,8 @@ package dna.central.zookeeper.client;
 
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /** 
 * @author fengmuhai
@@ -41,11 +43,14 @@ public class ClientBase {
 	
 	/**
 	 * 服务轮询记录
+	 * Hashtable改成ConcurrentHashMap，JDK1.5以后java提供了ConcurrentHashMap,也是支持同步的，性能
+	 * 比Hashtable要好
 	 */
-	public static Hashtable<String, Integer> ROUND_ROBIN_RECORD = new Hashtable<String, Integer>();
+	//public static Hashtable<String, Integer> ROUND_ROBIN_RECORD = new Hashtable<String, Integer>();
+	public static Map<String, Integer> ROUND_ROBIN_RECORD = new ConcurrentHashMap<String, Integer>();
 
-	public static Hashtable<String, Integer> getROUND_ROBIN_RECORD() {
-		return ROUND_ROBIN_RECORD;
+	public static ConcurrentHashMap<String, Integer> getROUND_ROBIN_RECORD() {
+		return (ConcurrentHashMap<String, Integer>) ROUND_ROBIN_RECORD;
 	}
 
 	public static synchronized int getRoundRobinChance(String key) {
